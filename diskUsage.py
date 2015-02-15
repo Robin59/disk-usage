@@ -39,9 +39,25 @@ class CurrentDir():
                 local_size += self.cache[os.path.join(root,subDir)]
             #and we stock it in the cache
             self.cache[root]= local_size
-           # print root, total_size
-            print root, local_size
-            
+           
+    def interact(self):
+        """
+        this method is for the interaction with the user
+        """
+        print "entre message"
+        currentPath=self.path
+        while True :
+            print "Current directory total size :", self.cache[currentPath]
+            anwser = raw_input("use q to quit")
+            currentPath = self.action(currentPath, anwser)
+
+    def action (self, currentPath, rawImput):
+       """
+       do the appropreate action related to the rawImput
+       """
+       if rawImput is 'q' :
+           exit(0)
+       return currentPath
             
 
 #entry to the program
@@ -56,7 +72,7 @@ def main():
     current_dir = CurrentDir(args.dir)
     if (args.runScan):
         current_dir.scan()
-
+    current_dir.interact()
 #lunch the main method if this file is lucnh as the main script
 if __name__=='__main__':
    exit(main())

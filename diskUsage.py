@@ -3,6 +3,25 @@
 import os, os.path
 from argparse import ArgumentParser
 
+class byte(int):
+    """
+    class for a better reprensetation of the bytes
+    """
+    #conversion list for bytes
+    conv = [(2**(10*4),'TiB'),(2**(10*3),'GiB'),(2**(100),'MiB'),(2**(10),'KiB'),(1,'B')]
+    #def __init__(self):
+    
+    def __repr__(self):
+        for (value,unit)in self.conv :
+            if self>=value :
+                if self%value ==0 :
+                    return "{:3d} {}".format(self/value,unit)
+                else:
+                    return "{:3d} {}".format(self/value,unit) #change this ligne
+        return "" #for the 0 case
+    
+    __str__ = __repr__
+
 class Cache(dict):
     """
     contain informations about the directories in the form {path : size_in_byte}
@@ -15,6 +34,7 @@ class Cache(dict):
             return dict.__getitem__(self,directory)
         except KeyError as e :
             print "no data for ", directory
+            return 0
 
 
 class CurrentDir():
@@ -53,7 +73,7 @@ class CurrentDir():
         while True :
             print "Current directory total size :", self.cache[currentPath]
             for subDir in os.listdir(currentPath) :
-                print subDir, self.cache[os.path.join(currentPath,subDir)]
+                print subDir, byte(self.cache[os.path.join(currentPath,subDir)])
             anwser = raw_input("use q to quit")
             currentPath = self.action(currentPath, anwser)
 

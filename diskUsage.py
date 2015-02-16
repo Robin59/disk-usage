@@ -10,7 +10,11 @@ class Cache(dict):
     def __init__(self):
         dict.__init__(self)
 
-    
+    def __getitem__(self, directory):
+        try:
+            return dict.__getitem__(self,directory)
+        except KeyError as e :
+            print "no data for ", directory
 
 
 class CurrentDir():
@@ -48,6 +52,8 @@ class CurrentDir():
         currentPath=self.path
         while True :
             print "Current directory total size :", self.cache[currentPath]
+            for subDir in os.listdir(currentPath) :
+                print subDir, self.cache[os.path.join(currentPath,subDir)]
             anwser = raw_input("use q to quit")
             currentPath = self.action(currentPath, anwser)
 

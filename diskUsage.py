@@ -73,10 +73,18 @@ class CurrentDir():
         currentPath=self.path
         while True :
             print "Current directory total size :", byte(self.cache[currentPath])
-            for subDir in os.listdir(currentPath) :
-                print subDir, byte(self.cache[os.path.join(currentPath,subDir)])
+            for subDir,value in self.sortDic(currentPath):
+                print subDir, byte(value)
             anwser = raw_input("use q to quit")
             currentPath = self.action(currentPath, anwser)
+            
+    def sortDic(self,currentPath):
+        #on creer une list de tuple, et on la trie , puis on l'affiche
+        fileList=[]
+        for subDir in os.listdir(currentPath) :
+            fileList.append((subDir, self.cache[os.path.join(currentPath,subDir)]))
+        fileList.sort(key = lambda sub : sub[1])
+        return fileList
 
     def action (self, currentPath, rawImput):
        """

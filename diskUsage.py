@@ -8,7 +8,7 @@ class byte(int):
     class for a better reprensetation of the bytes
     """
     #conversion list for bytes
-    conv = [(2**(10*4),'TiB'),(2**(10*3),'GiB'),(2**(100),'MiB'),(2**(10),'KiB'),(1,'B')]
+    conv = [(2**(10*4),'TiB'),(2**(10*3),'GiB'),(2**(20),'MiB'),(2**(10),'KiB'),(1,'B')]
     #def __init__(self):
     
     def __repr__(self):
@@ -17,7 +17,7 @@ class byte(int):
                 if self%value ==0 :
                     return "{:3d} {}".format(self/value,unit)
                 else:
-                    return "{:3d} {}".format(self/value,unit) #change this ligne
+                    return "{:3.2f} {}".format(float(self)/value,unit)
         return "" #for the 0 case
     
     __str__ = __repr__
@@ -55,9 +55,10 @@ class CurrentDir():
         for root, dirs, files in os.walk (self.path, topdown=False):
             #what's comming below gonna change
             filepaths = [os.path.join(root,file) for file in files]
+            #add of the files
+            self.cache.update([(filepath,os.path.getsize(filepath)) for filepath in filepaths])
             local_size = sum([os.path.getsize(filepath) for filepath in filepaths])
             local_size += os.path.getsize(root)
-            #local_size just contain the size of the directory + its files, but without its sub directory
             #here we had the size of the sub (which is possible because topdown = False)
             for subDir in dirs : 
                 local_size += self.cache[os.path.join(root,subDir)]
@@ -68,10 +69,10 @@ class CurrentDir():
         """
         this method is for the interaction with the user
         """
-        print "entre message"
+        print "" #entre message
         currentPath=self.path
         while True :
-            print "Current directory total size :", self.cache[currentPath]
+            print "Current directory total size :", byte(self.cache[currentPath])
             for subDir in os.listdir(currentPath) :
                 print subDir, byte(self.cache[os.path.join(currentPath,subDir)])
             anwser = raw_input("use q to quit")
@@ -80,9 +81,13 @@ class CurrentDir():
     def action (self, currentPath, rawImput):
        """
        do the appropreate action related to the rawImput
+       q for quit, s for a new scan
        """
        if rawImput is 'q' :
            exit(0)
+       elif rawImput is 's' :
+           self.cache =Cache()
+           self.scan()
        return currentPath
             
 
